@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         \Validator::extend('group_exist', function($attribute, $values, $parameters)
         {
             $groups_ids = Group::pluck('id')->toArray();

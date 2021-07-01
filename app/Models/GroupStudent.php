@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class GroupStudent extends Model
 {
     use HasFactory;
+    protected $table='group_students';
 
     protected $fillable = ['group_id', 'student_id', 'count', 'price'];
 
@@ -15,7 +16,7 @@ class GroupStudent extends Model
 
     public function group()
     {
-        return $this->belongsTo(Group::class);
+        return $this->belongsTo(Group::class,'group_id','id');
     }
 
     public function student()

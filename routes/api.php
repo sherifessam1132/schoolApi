@@ -37,7 +37,7 @@ Route::group([
 
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['jwt.token', 'roles:Admin']], function () {
+Route::group(['prefix' => 'admin'/*, 'middleware' => ['jwt.token', 'roles:Admin']*/], function () {
     //////////////////////////////Staff Routes///////////////////////
     Route::get('staff/all', [StaffController::class, 'getAllStaff']);
     Route::post('staff/add', [StaffController::class, 'addStaff']);
@@ -60,7 +60,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['jwt.token', 'roles:Admin']]
     Route::get('closed/subscriptions', [SubscriptionController::class, 'closedSubscriptions']);
 
 });
-Route::group(['prefix' => 'dashboard', 'middleware' => ['jwt.token', 'roles:Admin.Support.Secretary']], function () {
+Route::group(['prefix' => 'dashboard']/*, 'middleware' => ['jwt.token', 'roles:Admin.Support.Secretary'*/, function () {
 
     //////////////////////////////Teacher Routes///////////////////////
     Route::get('teachers/all', [TeacherController::class, 'getAllTeachers']);

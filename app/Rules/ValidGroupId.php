@@ -26,7 +26,7 @@ class ValidGroupId implements Rule
      */
     public function passes($attribute, $values)
     {
-        $groups_ids = Group::pluck('id')->toArray();
+        $groups_ids = Group::pluck('id')->all();
         foreach($values as $value) {
             if(!in_array($value[0], $groups_ids)) {
                 return false;

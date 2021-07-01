@@ -27,6 +27,7 @@ class SessionRepository implements SessionInterface
     public function allSessions()
     {
         $sessions = $this->groupSession::whereIsDeleted(0)->with('group:id,name')->get();
+
         return $this->apiResponse(200, 'All Sessions', null, $sessions);
     }
 
@@ -36,12 +37,13 @@ class SessionRepository implements SessionInterface
             'name' => 'required|string',
             'link' => 'required|url',
             'from' => 'required|date_format:H:i',
-            'to' => 'required|date_format:H:i|after:from',
+            'to' => 'required|date_format:H:i',
             'group_id' => 'required|exists:groups,id',
         ]);
         if($validation->fails()){
             return $this->apiResponse(422, 'Error', $validation->errors());
         }
+
 
         $this->groupSession::create([
             'name' => $request->name,

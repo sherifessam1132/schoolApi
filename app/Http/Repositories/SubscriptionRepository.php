@@ -21,9 +21,19 @@ class SubscriptionRepository implements SubscriptionInterface
     }
 
     public function limitSubscriptions()
+
     {
+
+//        $id=auth()->id();
+//
+//        $limitSubscriptions=$this->groupStudent->when('true',function ($q) use ($id) {
+//           return $q->where('student_id',3);
+//        })->get();
+////        dd($limitSubscriptions);
+//
         $limitSubscriptions = $this->groupStudent->whereIn('count', [1,2])
                                     ->with('student', 'group')->get();
+
 
         return $this->apiResponse(200, 'Data', null, SubscriptionResource::collection($limitSubscriptions));
     }

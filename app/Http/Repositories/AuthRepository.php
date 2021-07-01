@@ -27,7 +27,7 @@ class AuthRepository implements AuthInterface
 
         $credentials = $request->only('email', 'password');
 
-        if ($token = JWTAuth::attempt($credentials)) {
+        if ( $token = JWTAuth::attempt($credentials)) {
             return $this->respondWithToken($token);
         }
 
@@ -45,13 +45,14 @@ class AuthRepository implements AuthInterface
      */
     protected function respondWithToken($token)
     {
+
         $user = auth()->user();
         $data = [
             'name' => $user->name,
             'email' => $user->email,
             'phone' => $user->phone,
             'role_id' => $user->role_id,
-            'role_name' => $user->role->name,
+            'role_name' => $user->roleName->name,
             'token' => $token,
         ];
         return $this->apiResponse(200, 'User data', null, $data);

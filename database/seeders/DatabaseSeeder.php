@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(postsSeeder::class);
         $roles = ['Admin', 'Teacher', 'Student', 'Secretary', 'Manager'];
 
         foreach ($roles as $role){

@@ -18,7 +18,7 @@ class Roles
      */
     public function handle(Request $request, Closure $next, $roles)
     {
-        $userRole = auth()->user()->role->name;
+        $userRole = auth()->user()->roleName->name;
         $allowedRoles = explode('.', $roles);
 
         if( ! in_array($userRole, $allowedRoles)){

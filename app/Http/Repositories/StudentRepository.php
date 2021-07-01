@@ -8,11 +8,11 @@ use App\Http\Traits\ApiResponse;
 use App\Http\Traits\UserTrait;
 use App\Models\Attendance;
 use App\Models\GroupStudent;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Role;
 use App\Models\User;
 use App\Rules\ValidGroupId;
 use Illuminate\Validation\Rule;
-use Validator;
 use Hash;
 
 class StudentRepository implements StudentInterface
@@ -43,7 +43,7 @@ class StudentRepository implements StudentInterface
             'email' => 'required|email|unique:users',
             'phone' => 'required',
             'password' => 'required',
-            'groups.*' => 'required|min:3',
+            //'groups.*' => 'required|min:3',
             //'groups' => 'group_exist',
             'groups' => ['required', new ValidGroupId()],
         ]);
@@ -90,6 +90,8 @@ class StudentRepository implements StudentInterface
 
     public function updateStudent($request)
     {
+
+
         $validator = Validator::make($request->all(),[
             'student_id' => 'required|exists:users,id',
             'name' => 'required',
@@ -104,7 +106,12 @@ class StudentRepository implements StudentInterface
         if($validator->fails()){
             return $this->apiResponse(422,'Error',$validator->errors());
         }
-        $student = $this->user::staffTeacher(0, 0)->find($request->student_id);
+
+        //$student = $this->user::staffTeacher(0, 0)->find($request->student_id);
+        $student=$this->user->whereHas('roleName',function ($query){
+            return $query->where([['is_staff',0],['is_teacher',0]]);
+        })->with('roleName')->with('groups')->find($request->student_id);
+
 
         if( !$student ){
             return $this->apiResponse(404,'Student NotFound');
@@ -119,6 +126,7 @@ class StudentRepository implements StudentInterface
         if($request->has('groups')){
             foreach($request->groups as $group){
                 //$addedGroup = explode(',', $group);
+                    ;
                 $requestedGroups[] = $group[0];
                 $studentGroup = $this->groupStudent::where('student_id', $student->id)
                                             ->where('group_id', $group[0])
@@ -157,10 +165,21 @@ class StudentRepository implements StudentInterface
         if($validator->fails()){
             return $this->apiResponse(422,'Error',$validator->errors());
         }
-        $student = $this->user::where('id', $request->student_id)->staffTeacher(0, 0)
-                                ->with('role')
-                                ->with('groups.group')
-                                ->first();
+        $requests=$request->student_id;
+       $student = $this->user::where('id', $request->student_id)->whereHas('roleName',function ($q)  {
+       return $q->where([['is_staff',0],['is_teacher',0]]);
+       })->with('roleName')->with('groups.group')->get();
+//        $student = $this->user::where('id', $request->student_id)
+//                                ->whereHas('roleName',function ($q) {
+//                                    return $q->where('is_staff', 0)->where('is_teacher', 0);
+////                                StaffTeacher(0,0)
+//                                })->with('roleName')
+//                                ->get();
+       // $student = $this->user::where('id', $request->student_id)->with('groups')->get();
+     //  $students=$this->user->with('groups.group');
+//        print_r($student);
+            $students=$this->user->where('id',$request->student_id)->with('groups.group')->get();
+
         if($student){
             return $this->apiResponse(200,'Student Data',null, $student);
         }
@@ -192,10 +211,11 @@ class StudentRepository implements StudentInterface
         }
 
         $studentId = auth()->id();
-
+        dd($studentId);
         $userAttendance = $this->attendance::where('student_id', $studentId)
                                             ->where('session_id', $request->session_id)
                                             ->first();
+        dd($userAttendance);
         if($userAttendance){
             return $this->apiResponse(422,'You have already save attendance for this session');
         }

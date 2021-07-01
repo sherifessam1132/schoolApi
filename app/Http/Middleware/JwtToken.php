@@ -10,7 +10,8 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class JwtToken
-{   use ApiResponse;
+{
+    use ApiResponse;
     /**
      * Handle an incoming request.
      *
