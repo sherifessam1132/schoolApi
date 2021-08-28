@@ -11,3 +11,4 @@ class Attendance extends Model
 
     protected $fillable = ['session_id', 'student_id'];
 }
+

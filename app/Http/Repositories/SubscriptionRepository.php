@@ -29,7 +29,7 @@ class SubscriptionRepository implements SubscriptionInterface
 //        $limitSubscriptions=$this->groupStudent->when('true',function ($q) use ($id) {
 //           return $q->where('student_id',3);
 //        })->get();
-////        dd($limitSubscriptions);
+////        dd($limi    tSubscriptions);
 //
         $limitSubscriptions = $this->groupStudent->whereIn('count', [1,2])
                                     ->with('student', 'group')->get();
